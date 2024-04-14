@@ -1,6 +1,6 @@
 # Description
 
-Example of simple searching, sorting, filtration and pagination without any information about DB and ORM.
+Example of simple searching, sorting, filtration and pagination without any information about DB and ORM for FastAPI.
 
 ## Run an example
 
