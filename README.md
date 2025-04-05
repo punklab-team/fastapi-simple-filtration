@@ -9,7 +9,7 @@ pip instal -r requirements.txt
 ```
 
 ``` shell
-python3 src/example_app.py
+uvicorn example.app:app
 ```
 
 Go to <http://127.0.0.1:8000/docs>
