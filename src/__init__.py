@@ -1,7 +1,7 @@
 from .sort import SimpleSort, SortField, Order
 from .search import SimpleSearch
-from .filter import SimpleFiltration, FilterField, FilterOperator
-from .paginaton import SimplePagination
+from .filters import SimpleFiltration, FilterField, FilterOperator
+from .pagination import SimplePagination
 
 __all__ = [
     Order,

@@ -1,13 +1,17 @@
 import uvicorn
 from fastapi import Depends, FastAPI
-
-from filters import RootSorting, RootSearching, RootFiltration, RootPagination
+from .filters import (
+    RootSorting,
+    RootSearching,
+    RootFiltration,
+    RootPagination,
+)
 
 
 app = FastAPI()
 
 
-@app.get("/")
+@app.get("/root")
 async def root(
     sorting=Depends(RootSorting),
     searching=Depends(RootSearching),

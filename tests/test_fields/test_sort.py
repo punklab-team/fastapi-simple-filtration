@@ -1,7 +1,7 @@
 from factory.fuzzy import FuzzyInteger, FuzzyText, FuzzyChoice
 from fastapi import status
 
-from fields import (
+from src import (
     SimpleSort,
     SortField,
     Order,

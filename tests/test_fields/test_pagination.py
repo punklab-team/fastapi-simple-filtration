@@ -1,7 +1,7 @@
 from factory.fuzzy import FuzzyInteger
 from fastapi import Query, status
 
-from fields import SimplePagination
+from src import SimplePagination
 from .utils import get_fastapi_client
 
 
