@@ -18,10 +18,10 @@ class SimpleSearch:
     SEARCH_FIELDS: List[str] = []
 
     @classmethod
-    def create_search_dependency(cls):
+    def as_dependency(cls):
         """Фабрика для создания зависимости"""
 
-        async def search_dependency(
+        async def wrapper(
             search: Optional[str] = Query(
                 default=None,
                 description=f"Поисковой запрос (ищет по полю(полям): "
@@ -31,7 +31,7 @@ class SimpleSearch:
 
             return cls(search=search)
 
-        return search_dependency
+        return wrapper
 
     def __init__(self, search: str = Query(default=None)) -> None:
         """

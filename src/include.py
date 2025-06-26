@@ -20,11 +20,11 @@ class SimpleInclude:
         )
 
     @classmethod
-    def create_include_dependency(cls):
+    def as_dependency(cls):
         """Фабрика для создания зависимости"""
         IncludeFieldsEnum = cls._get_include_fields_enum()
 
-        async def include_dependency(
+        async def wrapper(
             include_fields: Set[IncludeFieldsEnum] = Query(
                 default=None,
                 alias="includeFields",
@@ -37,7 +37,7 @@ class SimpleInclude:
 
             return cls(fields={field.name for field in include_fields})
 
-        return include_dependency
+        return wrapper
 
     def __init__(self, fields: Set):
         if fields:

@@ -20,7 +20,7 @@ def test_field():
     class Sort(SimpleSort):
         SORT_FIELDS = sort_fields
 
-    fastapi_client = get_fastapi_client(Sort.create_sort_dependency())
+    fastapi_client = get_fastapi_client(Sort.as_dependency())
     response = fastapi_client.get("/", params={"sortField": field})
     assert response.status_code == status.HTTP_200_OK
     content = response.json()

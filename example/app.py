@@ -13,11 +13,11 @@ app = FastAPI()
 
 @app.get("/root")
 async def root(
-    sorting=Depends(RootSorting.create_sort_dependency()),
-    searching=Depends(RootSearching.create_search_dependency()),
-    filters=Depends(RootFiltration.create_filter_dependency()),
+    sorting=Depends(RootSorting.as_dependency()),
+    searching=Depends(RootSearching.as_dependency()),
+    filters=Depends(RootFiltration.as_dependency()),
     pagination=Depends(RootPagination),
-    include=Depends(RootIncluding.create_include_dependency()),
+    include=Depends(RootIncluding.as_dependency()),
 ):
     return {
         "sorting": sorting,

@@ -23,10 +23,10 @@ class FilterOperator(str, Enum):
 
     :param str eq: Оператор "равно".
     :param str ne: Оператор "не равно".
-    :param str gt: Оператор "больше или равно".
-    :param str lt: Оператор "меньше или равно".
-    :param str gte: Оператор "больше".
-    :param str lte: Оператор "меньше".
+    :param str gt: Оператор "больше".
+    :param str lt: Оператор "меньше".
+    :param str gte: Оператор "больше или равно".
+    :param str lte: Оператор "меньше или равно".
     :param str has: Проверка на существование значения.
     :param str contains_any: Проверка на наличие хотя бы
     одного значения в списке.
@@ -222,10 +222,10 @@ class SimpleFiltration:
     LOGICAL_OPERATORS = {"and", "or"}
 
     @classmethod
-    def create_filter_dependency(cls):
+    def as_dependency(cls):
         """Фабрика для создания зависимости"""
 
-        async def filter_dependency(
+        async def wrapper(
             filter: str = Query(
                 default=None,
                 description=FILTRATION,
@@ -234,7 +234,7 @@ class SimpleFiltration:
         ) -> "SimpleFiltration":
             return cls(filter_=filter)
 
-        return filter_dependency
+        return wrapper
 
     def __init__(self, filter_: str = Query(default="[]", alias="filters")):
         """

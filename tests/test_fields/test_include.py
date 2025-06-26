@@ -19,7 +19,7 @@ def test_field():
     class Include(SimpleInclude):
         INCLUDE_FIELDS = include_fields
 
-    fastapi_client = get_fastapi_client(Include.create_include_dependency())
+    fastapi_client = get_fastapi_client(Include.as_dependency())
     response = fastapi_client.get("/", params={"includeFields": field})
     assert response.status_code == status.HTTP_200_OK
     content = response.json()
@@ -38,6 +38,6 @@ def test_field_not_allowed():
     class Include(SimpleInclude):
         INCLUDE_FIELDS = include_fields
 
-    fastapi_client = get_fastapi_client(Include.create_include_dependency())
+    fastapi_client = get_fastapi_client(Include.as_dependency())
     response = fastapi_client.get("/", params={"includeFields": field})
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

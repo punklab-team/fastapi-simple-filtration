@@ -80,10 +80,10 @@ class SimpleSort:
         )
 
     @classmethod
-    def create_sort_dependency(cls):
+    def as_dependency(cls):
         SortFieldsEnum = cls._get_sort_fields_enum()
 
-        async def sort_dependency(
+        async def wrapper(
             sort_field: SortFieldsEnum = Query(
                 default=None,
                 alias="sortField",
@@ -98,7 +98,7 @@ class SimpleSort:
 
             return cls(sort_field=sort_field.value, sort_order=sort_order)
 
-        return sort_dependency
+        return wrapper
 
     def __init__(
         self,
