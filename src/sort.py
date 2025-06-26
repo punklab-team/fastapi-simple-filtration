@@ -1,4 +1,6 @@
 from enum import Enum
+from typing import Type, Optional
+
 from fastapi import HTTPException, Query, status
 
 
@@ -69,10 +71,39 @@ class SimpleSort:
 
     SORT_FIELDS = {}
 
+    @classmethod
+    def _get_sort_fields_enum(cls) -> Type[Enum]:
+        """Динамически создает Enum из ключей INCLUDE_FIELDS"""
+        return Enum(
+            "IncludeFields",
+            {field: field for field in cls.SORT_FIELDS.keys()},
+        )
+
+    @classmethod
+    def create_sort_dependency(cls):
+        SortFieldsEnum = cls._get_sort_fields_enum()
+
+        async def sort_dependency(
+            sort_field: SortFieldsEnum = Query(
+                default=None,
+                alias="sortField",
+                description="Сортировать по полю.",
+            ),
+            sort_order: Optional[Order] = Query(
+                alias="sortOrder",
+                description="Порядок сортировки.",
+                default=Order.asc,
+            ),
+        ) -> "SimpleSort":
+
+            return cls(sort_field=sort_field.value, sort_order=sort_order)
+
+        return sort_dependency
+
     def __init__(
         self,
-        sort_field: str = Query(default=None),
-        sort_order: Order = Query(default=Order.asc),
+        sort_field,
+        sort_order,
     ) -> None:
         """
         Инициализирует параметры сортировки.

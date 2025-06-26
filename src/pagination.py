@@ -16,8 +16,15 @@ class SimplePagination:
 
     def __init__(
         self,
-        offset: int = Query(default=0),
-        limit: int = Query(default=10, le=100),
+        offset: int = Query(
+            default=0,
+            description="Смещение от начала списка",
+        ),
+        limit: int = Query(
+            default=10,
+            le=100,
+            description="Количество возвращаемых элементов",
+        ),
     ):
         """
         Инициализирует параметры пагинации.

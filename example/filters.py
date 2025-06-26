@@ -6,6 +6,8 @@ from src import (
     FilterOperator,
     SimpleFiltration,
     SimplePagination,
+    SimpleInclude,
+    IncludeField,
 )
 
 
@@ -28,5 +30,24 @@ class RootFiltration(SimpleFiltration):
         "players__mainTeam": FilterField(
             field_type=str,
             operators=[FilterOperator.eq, FilterOperator.contains_all],
+        ),
+    }
+
+
+class RootIncluding(SimpleInclude):
+    INCLUDE_FIELDS = {
+        "id": IncludeField(alias="_id"),
+        "name": IncludeField(alias="name"),
+        "phone": IncludeField(alias="phone"),
+        "teams": IncludeField(alias="teams"),
+        "teams__id": IncludeField(alias="teams.id"),
+        "teams__name": IncludeField(alias="teams.name"),
+        "teams__imageUrl": IncludeField(alias="teams.img"),
+        "telegramAccess": IncludeField(alias="telegram_access"),
+        "telegramAccess__status": IncludeField(
+            alias="telegram_access.status",
+        ),
+        "telegramAccess__remainingAttempts": IncludeField(
+            alias="telegram_access.remainingAttempts",
         ),
     }

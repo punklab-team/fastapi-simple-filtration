@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from fastapi import HTTPException, Query
 
 
@@ -16,6 +16,22 @@ class SimpleSearch:
     """
 
     SEARCH_FIELDS: List[str] = []
+
+    @classmethod
+    def create_search_dependency(cls):
+        """Фабрика для создания зависимости"""
+
+        async def search_dependency(
+            search: Optional[str] = Query(
+                default=None,
+                description=f"Поисковой запрос (ищет по полю(полям): "
+                f"{', '.join(cls.SEARCH_FIELDS)})",
+            ),
+        ) -> "SimpleSearch":
+
+            return cls(search=search)
+
+        return search_dependency
 
     def __init__(self, search: str = Query(default=None)) -> None:
         """
