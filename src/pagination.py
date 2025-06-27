@@ -1,7 +1,10 @@
 from fastapi import Query
 
+from .base import Base
 
-class SimplePagination:
+
+class SimplePagination(Base):
+
     """
     Класс для управления пагинацией.
 
@@ -14,10 +17,34 @@ class SimplePagination:
     По умолчанию 10, максимальное значение — 100.
     """
 
+    OFFSET = 0
+    LIMIT_DEFAULT = 10
+    LIMIT_MAX = 100
+
+    @classmethod
+    def as_dependency(cls):
+        """Фабрика для создания зависимости"""
+
+        async def wrapper(
+            offset: int = Query(
+                default=cls.OFFSET,
+                description="Смещение от начала списка",
+            ),
+            limit: int = Query(
+                default=cls.LIMIT_DEFAULT,
+                le=cls.LIMIT_MAX,
+                description="Количество возвращаемых элементов",
+            ),
+        ) -> "SimplePagination":
+
+            return cls(offset=offset, limit=limit)
+
+        return wrapper
+
     def __init__(
         self,
-        offset: int = Query(default=0),
-        limit: int = Query(default=10, le=100),
+        offset,
+        limit,
     ):
         """
         Инициализирует параметры пагинации.

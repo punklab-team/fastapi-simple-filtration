@@ -5,6 +5,7 @@ from typing import Any, AnyStr, Dict, List, Union, get_args, get_origin
 from fastapi import HTTPException, Query, status
 from pydantic import BaseModel
 
+from .base import Base
 
 WRONG_FORMAT_MESSAGE = "Неверный формат фильтров."
 WRONG_FILER_SIZE_MESSAGE = "Фильтрация — это список списков из 3 элементов."
@@ -23,10 +24,10 @@ class FilterOperator(str, Enum):
 
     :param str eq: Оператор "равно".
     :param str ne: Оператор "не равно".
-    :param str ge: Оператор "больше или равно".
-    :param str le: Оператор "меньше или равно".
-    :param str gte: Оператор "больше".
-    :param str lte: Оператор "меньше".
+    :param str gt: Оператор "больше".
+    :param str lt: Оператор "меньше".
+    :param str gte: Оператор "больше или равно".
+    :param str lte: Оператор "меньше или равно".
     :param str has: Проверка на существование значения.
     :param str contains_any: Проверка на наличие хотя бы
     одного значения в списке.
@@ -35,8 +36,8 @@ class FilterOperator(str, Enum):
 
     eq = "eq"
     ne = "ne"
-    ge = "ge"
-    le = "le"
+    gt = "gt"
+    lt = "lt"
     gte = "gte"
     lte = "lte"
     has = "has"
@@ -62,10 +63,26 @@ class FilterOperator(str, Enum):
 
 _TYPE_OPERATORS_MAP = {
     str: ["eq", "ne", "has"],
-    int: ["eq", "ne", "ge", "le", "gte", "lte"],
-    float: ["eq", "ne", "ge", "le", "gte", "lte"],
+    int: ["eq", "ne", "gt", "lt", "gte", "lte"],
+    float: ["eq", "ne", "gt", "lt", "gte", "lte"],
     list: ["eq", "ne", "contains_any", "contains_all"],
 }
+
+FILTRATION = (
+    f"JSON-массив фильтров.\n"
+    f"\n**Форматы фильтров:**"
+    f"\n- Простой фильтр: `[[поле, значение, оператор], ...]`"
+    f"\n- Сложный фильтр: `[[поле, значение, оператор], and/or, [поле, значение, оператор], ...]`"
+    f"\n\n**Доступные общие операторы:**"
+    f"\n- `{FilterOperator.eq}` - равно"
+    f"\n- `{FilterOperator.has}` - содержит"
+    f"\n- `{FilterOperator.gte}` - нестрого больше или равно"
+    f"\n- `{FilterOperator.lte}` - нестрого меньше или равно"
+    f"\n- `{FilterOperator.gt}` - строго больше"
+    f"\n- `{FilterOperator.lt}` - строго меньше"
+    f"\n- `{FilterOperator.contains_any}` - содержит хотя бы одно из значений"
+    f"\n- `{FilterOperator.contains_all}` - содержит все значения"
+)
 
 
 class FilterResponse(BaseModel):
@@ -194,7 +211,7 @@ class FilterField:
         ).dict()
 
 
-class SimpleFiltration:
+class SimpleFiltration(Base):
     """
     Обрабатывает фильтрацию параметров запроса.
 
@@ -204,6 +221,21 @@ class SimpleFiltration:
     """
     FILTER_FIELDS: Dict[str, FilterField] = {}
     LOGICAL_OPERATORS = {"and", "or"}
+
+    @classmethod
+    def as_dependency(cls):
+        """Фабрика для создания зависимости"""
+
+        async def wrapper(
+            filter: str = Query(
+                default=None,
+                description=FILTRATION,
+                example="""[["phone","has","7"]]""",
+            ),
+        ) -> "SimpleFiltration":
+            return cls(filter_=filter)
+
+        return wrapper
 
     def __init__(self, filter_: str = Query(default="[]", alias="filters")):
         """
@@ -251,7 +283,7 @@ class SimpleFiltration:
                         LOGICAL_OPERATOR_NOT_FOUND.format(
                             operators=sorted(self.LOGICAL_OPERATORS),
                             position=operator_index + 1,
-                        )
+                        ),
                     )
                 result.append(self.parse_filter(filter_[operator_index - 1]))
                 result.append(filter_[operator_index])
@@ -299,7 +331,4 @@ class SimpleFiltration:
         :param filter_: Фильтр для проверки.
         :return: True, если это простой фильтр, иначе False.
         """
-        return (
-            isinstance(filter_, list)
-            and len(filter_) % 2 == 1
-        )
+        return isinstance(filter_, list) and len(filter_) % 2 == 1

@@ -36,11 +36,13 @@ def test_success__one_filter():
     field = FuzzyChoice(fields).fuzz()
 
     request_filters = [field, FilterOperator.eq, __get_value_by_type(str)]
-    filters = [{
-        "field_name": request_filters[0],
-        "operator": request_filters[1],
-        "value": request_filters[2],
-    }]
+    filters = [
+        {
+            "field_name": request_filters[0],
+            "operator": request_filters[1],
+            "value": request_filters[2],
+        }
+    ]
 
     fastapi_client = get_fastapi_client(Filters)
     response = fastapi_client.get(
@@ -57,10 +59,10 @@ def test_success__one_filter():
     "_type,operators",
     (
         (str, ["eq", "ne", "has"]),
-        (int, ["eq", "ne", "ge", "le", "gte", "lte"]),
-        (float, ["eq", "ne", "ge", "le", "gte", "lte"]),
+        (int, ["eq", "ne", "gt", "lt", "gte", "lte"]),
+        (float, ["eq", "ne", "gt", "lt", "gte", "lte"]),
         (List[str], ["eq", "ne", "contains_any", "contains_all"]),
-    )
+    ),
 )
 def test_success__operators(_type, operators):
     fields = {
@@ -158,10 +160,10 @@ def test_fail__operator_not_allowed__specified():
     "_type,operators_allowed",
     (
         (str, ["eq", "ne", "has"]),
-        (int, ["eq", "ne", "ge", "le", "gte", "lte"]),
-        (float, ["eq", "ne", "ge", "le", "gte", "lte"]),
+        (int, ["eq", "ne", "gt", "lt", "gte", "lte"]),
+        (float, ["eq", "ne", "gt", "lt", "gte", "lte"]),
         (List[str], ["eq", "ne", "contains_any", "contains_all"]),
-    )
+    ),
 )
 def test_fail__operator_not_allowed__not_specified(_type, operators_allowed):
     operators = list(FilterOperator)
@@ -278,7 +280,9 @@ def test_success__empty_alias():
 
     field_name = FuzzyChoice(fields).fuzz()
     request_filter = [
-        field_name, FilterOperator.eq, FuzzyText().fuzz(),
+        field_name,
+        FilterOperator.eq,
+        FuzzyText().fuzz(),
     ]
 
     fastapi_client = get_fastapi_client(Filters)
@@ -321,6 +325,7 @@ def test_success__nested_filtering():
         for i in range(1, len(filters) + 1, 2):
             filters.insert(i, FuzzyChoice(["and", "or"]).fuzz())
         return filters
+
     filters = gen_([[], [], []], 0)
 
     def parse_(filters: list):
@@ -328,10 +333,10 @@ def test_success__nested_filtering():
         result = []
         if isinstance(filters[0], str):
             result = {
-                    "field_name": filters[0],
-                    "operator": filters[1],
-                    "value": filters[2],
-                }
+                "field_name": filters[0],
+                "operator": filters[1],
+                "value": filters[2],
+            }
         elif isinstance(filters[0], list):
             for filter_ in filters:
                 if isinstance(filter_, list):

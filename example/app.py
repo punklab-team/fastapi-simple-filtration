@@ -5,24 +5,26 @@ from .filters import (
     RootSearching,
     RootFiltration,
     RootPagination,
+    RootIncluding,
 )
-
 
 app = FastAPI()
 
 
 @app.get("/root")
 async def root(
-    sorting=Depends(RootSorting),
-    searching=Depends(RootSearching),
-    filters=Depends(RootFiltration),
-    pagination=Depends(RootPagination),
+    sorting=Depends(RootSorting.as_dependency()),
+    searching=Depends(RootSearching.as_dependency()),
+    filters=Depends(RootFiltration.as_dependency()),
+    pagination=Depends(RootPagination.as_dependency()),
+    include=Depends(RootIncluding.as_dependency()),
 ):
     return {
         "sorting": sorting,
         "searching": searching,
         "filters": filters,
         "pagination": pagination,
+        "include": include,
     }
 
 if __name__ == "__main__":

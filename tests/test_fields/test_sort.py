@@ -20,11 +20,8 @@ def test_field():
     class Sort(SimpleSort):
         SORT_FIELDS = sort_fields
 
-    fastapi_client = get_fastapi_client(Sort)
-    response = fastapi_client.get(
-        "/",
-        params={"sort_field": field}
-    )
+    fastapi_client = get_fastapi_client(Sort.as_dependency())
+    response = fastapi_client.get("/", params={"sortField": field})
     assert response.status_code == status.HTTP_200_OK
     content = response.json()
     assert content.pop("field") == sort_fields.get(field).alias
@@ -44,10 +41,7 @@ def test_field_not_allowed():
         SORT_FIELDS = sort_fields
 
     fastapi_client = get_fastapi_client(Sort)
-    response = fastapi_client.get(
-        "/",
-        params={"sort_field": field}
-    )
+    response = fastapi_client.get("/", params={"sortField": field})
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -61,6 +55,6 @@ def test_wrong_order():
     fastapi_client = get_fastapi_client(Sort)
     response = fastapi_client.get(
         "/",
-        params={"sort_field": field, "sort_order": FuzzyText().fuzz()},
+        params={"sortField": field, "sortOrder": FuzzyText().fuzz()},
     )
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
