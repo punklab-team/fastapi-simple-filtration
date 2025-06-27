@@ -7,7 +7,8 @@ with open('requirements.txt') as f:
 setup(
     name='fastapi-filter',
     version='0.0.1',
-    packages=find_packages(),
+    packages=["fastapi_filter"],
+    package_dir={"fastapi_filter": "src"},
     install_requires=install_requires,
     test_suite='tests',  # Папка с тестами
     author='Aleksandr Andrukhov',
