@@ -1,4 +1,4 @@
-from src import (
+from src.fastapi_filter import (
     SortField,
     SimpleSort,
     FilterField,

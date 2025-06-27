@@ -1,7 +1,7 @@
 from factory.fuzzy import FuzzyInteger, FuzzyText, FuzzyChoice
 from fastapi import status
 
-from src import (
+from src.fastapi_filter import (
     SimpleInclude,
     IncludeField,
 )

@@ -1,7 +1,7 @@
 from factory.fuzzy import FuzzyInteger, FuzzyText
 from fastapi import status
 
-from src import SimpleSearch
+from src.fastapi_filter import SimpleSearch
 from .utils import get_fastapi_client
 
 
