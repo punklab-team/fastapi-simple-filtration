@@ -3,6 +3,8 @@ from typing import Type, Optional
 
 from fastapi import HTTPException, Query, status
 
+from .base import Base
+
 
 class Order(str, Enum):
     """
@@ -55,7 +57,7 @@ class SortField:
         self.alias = alias
 
 
-class SimpleSort:
+class SimpleSort(Base):
     """
     Класс для обработки параметров сортировки.
 

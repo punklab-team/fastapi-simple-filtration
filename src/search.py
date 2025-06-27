@@ -1,8 +1,10 @@
 from typing import List, Optional
 from fastapi import HTTPException, Query
 
+from .base import Base
 
-class SimpleSearch:
+
+class SimpleSearch(Base):
     """
     Класс для реализации функционала поиска.
 

@@ -5,6 +5,7 @@ from typing import Any, AnyStr, Dict, List, Union, get_args, get_origin
 from fastapi import HTTPException, Query, status
 from pydantic import BaseModel
 
+from .base import Base
 
 WRONG_FORMAT_MESSAGE = "Неверный формат фильтров."
 WRONG_FILER_SIZE_MESSAGE = "Фильтрация — это список списков из 3 элементов."
@@ -210,7 +211,7 @@ class FilterField:
         ).dict()
 
 
-class SimpleFiltration:
+class SimpleFiltration(Base):
     """
     Обрабатывает фильтрацию параметров запроса.
 

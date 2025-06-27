@@ -20,15 +20,10 @@ def test_limit_exceeded():
     max_limit = FuzzyInteger(100, 200).fuzz()
 
     class Pagination(SimplePagination):
+        LIMIT_MAX = max_limit
+        LIMIT_DEFAULT = default_limit
 
-        def __init__(
-            self,
-            offset: int = Query(default=0),
-            limit: int = Query(default=default_limit, le=max_limit),
-        ):
-            super().__init__(offset, limit)
-
-    fastapi_client = get_fastapi_client(Pagination)
+    fastapi_client = get_fastapi_client(Pagination.as_dependency())
     response = fastapi_client.get("/", params={"limit": max_limit})
     assert response.status_code == status.HTTP_200_OK
     response = fastapi_client.get("/", params={"limit": max_limit + 1})
@@ -40,15 +35,11 @@ def test_default_offset_and_limit():
     default_limit = FuzzyInteger(0, 100).fuzz()
 
     class Pagination(SimplePagination):
+        OFFSET = default_offset
+        LIMIT_DEFAULT = default_limit
+        LIMIT_MAX = 0
 
-        def __init__(
-            self,
-            offset: int = Query(default=default_offset),
-            limit: int = Query(default=default_limit, le=0),
-        ):
-            super().__init__(offset, limit)
-
-    fastapi_client = get_fastapi_client(Pagination)
+    fastapi_client = get_fastapi_client(Pagination.as_dependency())
     response = fastapi_client.get("/")
     assert response.status_code == status.HTTP_200_OK
     content = response.json()

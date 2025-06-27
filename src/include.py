@@ -3,12 +3,14 @@ from enum import Enum
 from fastapi import Query, status, HTTPException
 from pydantic.v1 import BaseModel
 
+from .base import Base
+
 
 class IncludeField(BaseModel):
     alias: str
 
 
-class SimpleInclude:
+class SimpleInclude(Base):
     INCLUDE_FIELDS = {}
 
     @classmethod

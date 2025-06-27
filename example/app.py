@@ -16,7 +16,7 @@ async def root(
     sorting=Depends(RootSorting.as_dependency()),
     searching=Depends(RootSearching.as_dependency()),
     filters=Depends(RootFiltration.as_dependency()),
-    pagination=Depends(RootPagination),
+    pagination=Depends(RootPagination.as_dependency()),
     include=Depends(RootIncluding.as_dependency()),
 ):
     return {
