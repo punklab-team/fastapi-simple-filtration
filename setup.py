@@ -1,16 +1,14 @@
 from setuptools import setup, find_packages
 
-
 with open('requirements.txt') as f:
     install_requires = f.read().splitlines()
 
 setup(
     name='fastapi-filter',
     version='0.0.1',
-    packages=["fastapi_filter"],
-    package_dir={"fastapi_filter": "src"},
+    packages=find_packages(where='src', include=['fastapi_filter']),
+    package_dir={'': 'src'},
     install_requires=install_requires,
-    test_suite='tests',  # Папка с тестами
     author='Aleksandr Andrukhov',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
