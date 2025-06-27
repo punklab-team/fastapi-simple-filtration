@@ -8,4 +8,4 @@ def get_fastapi_client(dependency) -> TestClient:
     @app.get("/")
     def _(_=Depends(dependency)):
         return _
-    return TestClient(app)
+    return TestClient(app=app)

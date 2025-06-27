@@ -1,7 +1,7 @@
 from typing import Set
 from enum import Enum
 from fastapi import Query, status, HTTPException
-from pydantic.v1 import BaseModel
+from pydantic import BaseModel
 
 from .base import Base
 
@@ -27,7 +27,7 @@ class SimpleInclude(Base):
         IncludeFieldsEnum = cls._get_include_fields_enum()
 
         async def wrapper(
-            include_fields: Set[IncludeFieldsEnum] = Query(
+            include_fields: Set[IncludeFieldsEnum] = Query(     # type: ignore
                 default=None,
                 alias="includeFields",
                 description=(
@@ -49,6 +49,9 @@ class SimpleInclude(Base):
                     status.HTTP_422_UNPROCESSABLE_ENTITY,
                     f"Wrong field names {extra_fields} for include fields.",
                 )
-            self.fields = [self.INCLUDE_FIELDS[field].alias for field in fields]
+            self.fields = [
+                self.INCLUDE_FIELDS[field].alias
+                for field in fields
+            ]
         else:
             self.fields = None
